@@ -1,21 +1,13 @@
-def maximumSubarraySum(numbers):
-    max_sum = -10 ** 100  # Инициализация минимальной суммой
-    best_subarray = []  # Подмассив с максимальной суммой
+def max_subarray(arr):
+    n = len(arr)
+    max_sum = float('-inf')
+    current_sum = 0
 
-    for i in range(len(numbers)):
-        current_sum = 0
-        for j in range(i, len(numbers)):
-            current_sum += numbers[j]
+    for i in range(n):
+        current_sum += arr[i]
+        max_sum = max(max_sum, current_sum)
+        current_sum = max(current_sum, 0)
 
-            # Проверяем, нужно ли обновить максимальную сумму
-            if max_sum < current_sum:
-                max_sum = current_sum
-                best_subarray = numbers[i:j + 1]  # Сохраняем текущий подмассив
-
-    print("Подмассив с максимальной суммой:", best_subarray)
-    print("Максимальная сумма:", max_sum)
-
-
-# Ввод массива
-numbers = list(int(input("Введите число: ")) for i in range(int(input("Введите длину массива: "))))
-maximumSubarraySum(numbers)
+    return max_sum
+arr = list(map(int, input("Введите массив чисел через пробел: ").split()))
+print("Максимальная сумма подмассива:", max_subarray(arr))
