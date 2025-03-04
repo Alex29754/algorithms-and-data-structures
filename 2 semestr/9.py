@@ -1,21 +1,24 @@
-def tsp(graph, start):
-    n = len(graph)
-    visited = (1 << n) - 1
-    memo = {}
+def tsp(dist):
+    n = len(dist)
+    dp = [[float('inf')] * n for _ in range(1 << n)]
+    dp[1][0] = 0  # Начинаем с города 0
 
-    def dfs(node, visited):
-        if visited == 0:
-            return graph[node][start]
-
-        if (node, visited) in memo:
-            return memo[(node, visited)]
-
-        ans = float('inf')
+    for mask in range(1 << n):
         for i in range(n):
-            if visited & (1 << i):
-                ans = min(ans, graph[node][i] + dfs(i, visited ^ (1 << i)))
+            if dp[mask][i] == float('inf'):
+                continue
+            for j in range(n):
+                if not (mask & (1 << j)):
+                    dp[mask | (1 << j)][j] = min(dp[mask | (1 << j)][j], dp[mask][i] + dist[i][j])
 
-        memo[(node, visited)] = ans
-        return ans
+    # Возвращаем минимальную стоимость полного цикла
+    return min(dp[(1 << n) - 1][i] + dist[i][0] for i in range(n))
 
-    return dfs(start, visited)
+# Пример использования
+dist = [
+    [0, 8, 4, 10],
+    [8, 0, 7, 5],
+    [4, 7, 0, 3],
+    [10, 5, 3, 0]
+]
+print(tsp(dist))
