@@ -27,6 +27,7 @@ def rabin_karp(text, pattern, base=256, prime=101):
     return -1  # Если не найдено
 
 # Пример использования
-text = "hello world"
-pattern = "world"
-print(rabin_karp(text, pattern))  # Выведет 6
+text = "bcdeabcabcfgabc"
+pattern = "abc"
+print(rabin_karp(text, pattern))  # Ожидаем 0 (первое вхождение "abc" в начале)
+

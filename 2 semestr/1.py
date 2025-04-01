@@ -1,39 +1,50 @@
-def leftmost_point(points):
-    return min(points, key=lambda p: (p[0], p[1]))
+import matplotlib.pyplot as plt
 
 
 def cross_product(o, a, b):
+    """Вычисляет векторное произведение для трех точек o, a, b."""
     return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
 
-def jarvis_march(points):
+def convex_hull(points):
+    """Находит выпуклую оболочку множества точек с помощью алгоритма Грэхема."""
     if len(points) < 3:
-        return []
+        return points  # Выпуклая оболочка невозможна
 
-    hull = []
-    start = leftmost_point(points)
-    point_on_hull = start
+    points = sorted(points)  # Сортируем точки по x, при равных x — по y
 
-    while True:
-        hull.append(point_on_hull)
-        next_point = points[0] if points[0] != point_on_hull else points[1]
+    # Строим нижнюю оболочку
+    lower = []
+    for p in points:
+        while len(lower) >= 2 and cross_product(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
 
-        for p in points:
-            if cross_product(point_on_hull, next_point, p) < 0:
-                next_point = p
+    # Строим верхнюю оболочку
+    upper = []
+    for p in reversed(points):
+        while len(upper) >= 2 and cross_product(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
 
-        point_on_hull = next_point
-        if point_on_hull == start:
-            break
-
-    return hull
+    return lower[:-1] + upper[:-1]  # Исключаем повторяющиеся точки
 
 
-n = int(input("Введите количество точек: "))
-points = [tuple(map(int, input().split())) for _ in range(n)]
+def plot_convex_hull(points, hull):
+    """Визуализирует исходные точки и их выпуклую оболочку."""
+    x, y = zip(*points)
+    plt.scatter(x, y, label='Точки')
 
-hull = jarvis_march(points)
-if hull:
-    print("Выпуклая оболочка существует. Точки:", hull)
-else:
-    print("Выпуклая оболочка невозможна.")
+    hull.append(hull[0])  # Замыкаем оболочку
+    hx, hy = zip(*hull)
+    plt.plot(hx, hy, 'r-', label='Выпуклая оболочка')
+
+    plt.legend()
+    plt.show()
+
+
+# Пример использования:
+points = [(0, 0), (1, 1), (2, 2), (2, 0), (2, 3), (3, 3), (3, 1)]
+hull = convex_hull(points)
+print("Выпуклая оболочка:", hull)
+plot_convex_hull(points, hull)
