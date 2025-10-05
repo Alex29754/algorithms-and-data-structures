@@ -8,6 +8,6 @@ def selection_sort(arr):
     arr[i], arr[min_index] = arr[min_index], arr[i]
 
 # Пример использования
-my_list = [64, 34, 25, 12, 22, 11, 90]
+my_list = [64, 34, 25, 12, 22, 11, 90, 87235983742, 53]
 selection_sort(my_list)
 print(my_list)
